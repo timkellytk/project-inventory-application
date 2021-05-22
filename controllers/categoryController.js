@@ -1,4 +1,6 @@
 const Category = require("../models/Category");
+const Surfboard = require("../models/Surfboard");
+const async = require("async");
 const { body, validationResult } = require("express-validator");
 
 // Display all categories
@@ -17,12 +19,26 @@ exports.category_list = function (req, res, next) {
 
 // Display category details page
 exports.category_detail = function (req, res, next) {
-  Category.findById(req.params.id).exec(function (err, the_category) {
-    if (err) {
-      return next(err);
+  async.parallel(
+    {
+      category: function (callback) {
+        Category.findById(req.params.id).exec(callback);
+      },
+      surfboards: function (callback) {
+        Surfboard.find({ category: req.params.id }).exec(callback);
+      },
+    },
+    function (err, results) {
+      if (err) {
+        return next(err);
+      }
+
+      res.render("category_details", {
+        category: results.category,
+        surfboards: results.surfboards,
+      });
     }
-    res.render("category_details", { category: the_category });
-  });
+  );
 };
 
 // Display create category form on GET

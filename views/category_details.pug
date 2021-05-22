@@ -4,6 +4,12 @@ block content
   h1=category.name
   p=category.description
 
+  h5 #{category.name}'s
+  ul 
+    each surfboard in surfboards
+      li 
+        a(href=surfboard.url) #{surfboard.name}
+
   p
     a(href='/inventory/categories/' + category._id + '/update') Update category
   p
