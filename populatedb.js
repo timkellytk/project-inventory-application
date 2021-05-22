@@ -74,21 +74,27 @@ function surfboardCreate(
 function createCategories(cb) {
   async.series(
     [
-      categoryCreate(
-        "Shortboard",
-        "Shortboards range from about five to seven feet long, and have an upturned tip (nose rocker)",
-        callback
-      ),
-      categoryCreate(
-        "Longboards",
-        "Longboarding, however, is ultimately a cruisier way of surfing. You're normally on smaller waves, catching more of them, riding for longer lengths of time (than on a shortboard), and you're also able to do different maneuvers on the craft.",
-        callback
-      ),
-      categoryCreate(
-        "Funboards",
-        "Choosing a surfboard shape is all about compromise, and the perfect example is the funboard. You can consider the funboard as an “in-between”, half-way between the longboard and the fish.",
-        callback
-      ),
+      function (callback) {
+        categoryCreate(
+          "Shortboard",
+          "Shortboards range from about five to seven feet long, and have an upturned tip (nose rocker)",
+          callback
+        );
+      },
+      function (callback) {
+        categoryCreate(
+          "Longboards",
+          "Longboarding, however, is ultimately a cruisier way of surfing. You're normally on smaller waves, catching more of them, riding for longer lengths of time (than on a shortboard), and you're also able to do different maneuvers on the craft.",
+          callback
+        );
+      },
+      function (callback) {
+        categoryCreate(
+          "Funboards",
+          "Choosing a surfboard shape is all about compromise, and the perfect example is the funboard. You can consider the funboard as an “in-between”, half-way between the longboard and the fish.",
+          callback
+        );
+      },
     ],
     cb
   );
@@ -97,54 +103,66 @@ function createCategories(cb) {
 function createSurfboards(cb) {
   async.series(
     [
-      surfboardCreate(
-        "DARK HORSE - SHORTBOARD - WHITE",
-        "The Vessel Dark Horse is a performance shortboard with a wider profile and tailored for smaller days or for surfers who simply want a little more paddle power",
-        categories[0],
-        359,
-        3,
-        callback
-      ),
-      surfboardCreate(
-        "DELTA - BLACK SHORTBOARD",
-        "The Vessel Delta is our most impressive shortboard yet.",
-        categories[0],
-        359,
-        1,
-        callback
-      ),
-      surfboardCreate(
-        "'CONTROL FREAK' BY RY CRAIKE",
-        "The ISLAND ‘Control Freak’ is an Australian made performance hybrid and perfect allrounder to suit any wave conditions, if you could only take one board on a surf trip the “Control Freak” is the one to pack.",
-        categories[0],
-        639,
-        2,
-        callback
-      ),
-      surfboardCreate(
-        "VINTAGE LOG MAROON",
-        "The AQSS Vintage log is the ultimate traditional nose rider.",
-        categories[1],
-        599,
-        2,
-        callback
-      ),
-      surfboardCreate(
-        "BRONZE WHALER BY BEAU YOUNG",
-        "The AQSS Bronze Whaler is the awe-inspiring new model by 2x World Champion Beau Young.",
-        categories[2],
-        899,
-        1,
-        callback
-      ),
-      surfboardCreate(
-        "ECO BEAN II FUNBOARD",
-        "The Eco Bean delivers unprecedented strength with Vessel’s unique Carbon Infusion Technology.",
-        categories[2],
-        299,
-        5,
-        callback
-      ),
+      function (callback) {
+        surfboardCreate(
+          "DARK HORSE - SHORTBOARD - WHITE",
+          "The Vessel Dark Horse is a performance shortboard with a wider profile and tailored for smaller days or for surfers who simply want a little more paddle power",
+          categories[0],
+          359,
+          3,
+          callback
+        );
+      },
+      function (callback) {
+        surfboardCreate(
+          "DELTA - BLACK SHORTBOARD",
+          "The Vessel Delta is our most impressive shortboard yet.",
+          categories[0],
+          359,
+          1,
+          callback
+        );
+      },
+      function (callback) {
+        surfboardCreate(
+          "'CONTROL FREAK' BY RY CRAIKE",
+          "The ISLAND ‘Control Freak’ is an Australian made performance hybrid and perfect allrounder to suit any wave conditions, if you could only take one board on a surf trip the “Control Freak” is the one to pack.",
+          categories[0],
+          639,
+          2,
+          callback
+        );
+      },
+      function (callback) {
+        surfboardCreate(
+          "VINTAGE LOG MAROON",
+          "The AQSS Vintage log is the ultimate traditional nose rider.",
+          categories[1],
+          599,
+          2,
+          callback
+        );
+      },
+      function (callback) {
+        surfboardCreate(
+          "BRONZE WHALER BY BEAU YOUNG",
+          "The AQSS Bronze Whaler is the awe-inspiring new model by 2x World Champion Beau Young.",
+          categories[2],
+          899,
+          1,
+          callback
+        );
+      },
+      function (callback) {
+        surfboardCreate(
+          "ECO BEAN II FUNBOARD",
+          "The Eco Bean delivers unprecedented strength with Vessel’s unique Carbon Infusion Technology.",
+          categories[2],
+          299,
+          5,
+          callback
+        );
+      },
     ],
     cb
   );

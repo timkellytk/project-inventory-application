@@ -1,11 +1,9 @@
 const mongoose = require("mongoose");
 
-const Schema = mongoose.schema();
-
-const SurfboardSchema = new Schema({
+const SurfboardSchema = mongoose.Schema({
   name: { type: String, required: true, maxLength: 100 },
   description: { type: String, maxLength: 300 },
-  category: { type: Schema.Types.ObjectId },
+  category: { type: mongoose.Schema.Types.ObjectId },
   price: { type: Number },
   number_in_stock: { type: Number },
 });
