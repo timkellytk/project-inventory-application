@@ -1,8 +1,9 @@
-const category = require("../models/Category");
+const Category = require("../models/Category");
+const { body, validationResult } = require("express-validator");
 
 // Display all categories
 exports.category_list = function (req, res, next) {
-  category.find({}).exec(function (err, category_list) {
+  Category.find({}).exec(function (err, category_list) {
     if (err) {
       return next(err);
     }
@@ -16,8 +17,7 @@ exports.category_list = function (req, res, next) {
 
 // Display category details page
 exports.category_detail = function (req, res, next) {
-  console.log("-----category_detail fired");
-  category.findById(req.params.id).exec(function (err, the_category) {
+  Category.findById(req.params.id).exec(function (err, the_category) {
     if (err) {
       return next(err);
     }
@@ -27,13 +27,49 @@ exports.category_detail = function (req, res, next) {
 
 // Display create category form on GET
 exports.category_create_get = function (req, res, next) {
-  res.send("NOT IMPLEMENTED: create category GET");
+  res.render("category_form", { title: "Create Category" });
 };
 
 // Handle create category form on POST
-exports.category_create_post = function (req, res, next) {
-  res.send("NOT IMPLEMENTED: create category POST");
-};
+exports.category_create_post = [
+  // Validate and sanitise fields
+  body("name")
+    .trim()
+    .isLength({ min: 1 })
+    .escape()
+    .withMessage("You need to enter a name"),
+  body("description")
+    .trim()
+    .isLength({ min: 1 })
+    .escape()
+    .withMessage("You need to enter a description"),
+  function (req, res, next) {
+    // If errors, re-render form with error messages
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      res.render("category_form", {
+        title: "Create Category",
+        errors: errors.array(),
+      });
+    }
+
+    // Create new category and save to db
+    const new_category = new Category({
+      name: req.body.name,
+      description: req.body.description,
+    });
+
+    new_category.save(function (err) {
+      if (err) {
+        return next(err);
+      }
+
+      // Redirect to new category
+      res.redirect(new_category.url);
+    });
+  },
+];
 
 // Display update category form on GET
 exports.category_update_get = function (req, res, next) {
