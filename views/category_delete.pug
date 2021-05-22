@@ -1,0 +1,11 @@
+extends layout 
+
+block content 
+  h1 Delete #{category.name}?
+  p Warning: you can't undo this action 
+
+  form(method="POST" action="")
+    .form-group 
+      input#categoryid.form-control(type='hidden', name='categoryid' required='true' value=category._id)
+
+    button.btn.btn-danger(type='submit') Delete

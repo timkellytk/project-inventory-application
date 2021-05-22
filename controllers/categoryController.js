@@ -136,10 +136,21 @@ exports.category_update_post = [
 
 // Display delete category form on GET
 exports.category_delete_get = function (req, res, next) {
-  res.send("NOT IMPLEMENTED: category delete GET");
+  Category.findById(req.params.id).exec(function (err, the_category) {
+    if (err) {
+      return next(err);
+    }
+    res.render("category_delete", { category: the_category });
+  });
 };
 
 // Handle delete category form on POST
 exports.category_delete_post = function (req, res, next) {
-  res.send("NOT IMPLEMENTED: category delete post");
+  Category.findByIdAndDelete(req.body.categoryid, {}, function (err) {
+    if (err) {
+      return next(err);
+    }
+
+    res.redirect("/inventory/categories");
+  });
 };
