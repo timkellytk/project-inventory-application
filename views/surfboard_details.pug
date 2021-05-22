@@ -1,0 +1,14 @@
+extends layout 
+
+block content 
+  h1=surfboard.name 
+  p=surfboard.description 
+  p Category: 
+    a(href=surfboard.category.url) #{surfboard.category.name}
+  br
+  
+  h5 $#{surfboard.price}
+  p Number in stock: #{surfboard.number_in_stock}
+
+  p 
+    a(href='/inventory/surfboards') Back to surfboards

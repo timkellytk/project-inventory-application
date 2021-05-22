@@ -37,7 +37,7 @@ function categoryCreate(name, description, cb) {
     }
 
     console.log("New Category: " + category);
-    categories.push(category);
+    categories.push(category._id);
     return cb(null, category);
   });
 }
