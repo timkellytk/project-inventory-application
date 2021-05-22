@@ -31,7 +31,6 @@ exports.surfboard_details = function (req, res, next) {
         error.status = 404;
         return next(error);
       }
-      console.log("----------the_surfboard", the_surfboard);
 
       res.render("surfboard_details", { surfboard: the_surfboard });
     });
@@ -59,7 +58,12 @@ exports.surfboard_update_post = function (req, res, next) {
 
 // Display surfboard delete form on GET
 exports.surfboard_delete_get = function (req, res, next) {
-  res.send("NOT IMPLEMENTED: delete surfboard GET");
+  Surfboard.findById(req.params.id).exec(function (err, the_surfboard) {
+    if (err) {
+      return next(err);
+    }
+    res.render("surfboard_delete", { surfboard: the_surfboard });
+  });
 };
 
 // Handle surfboard delete form on POST
