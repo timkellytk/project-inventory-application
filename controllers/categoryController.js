@@ -2,12 +2,27 @@ const category = require("../models/Category");
 
 // Display all categories
 exports.category_list = function (req, res, next) {
-  res.send("NOT IMPLEMENTED: display all categories");
+  category.find({}).exec(function (err, category_list) {
+    if (err) {
+      return next(err);
+    }
+
+    res.render("category_list", {
+      title: "All Categories",
+      category_list: category_list,
+    });
+  });
 };
 
 // Display category details page
 exports.category_detail = function (req, res, next) {
-  res.send("NOT IMPLEMENTED: display category details");
+  console.log("-----category_detail fired");
+  category.findById(req.params.id).exec(function (err, the_category) {
+    if (err) {
+      return next(err);
+    }
+    res.render("category_details", { category: the_category });
+  });
 };
 
 // Display create category form on GET
