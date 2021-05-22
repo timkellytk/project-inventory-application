@@ -1,8 +1,21 @@
-const surfboard = require("../models/Surfboard");
+const Surfboard = require("../models/Surfboard");
 
 // Display list of all surfboards
 exports.surfboard_list = function (req, res, next) {
-  res.send("NOT IMPLEMENTED: display surfboard list");
+  Surfboard.find().exec(function (err, surfboard_list) {
+    if (err) {
+      return next(err);
+    }
+
+    if (surfboard_list == null) {
+      const error = new Error("Surfboards not found");
+      err.status = 404;
+      return next(error);
+    }
+
+    res.render("surfboard_list", { surfboard_list: surfboard_list });
+    return;
+  });
 };
 
 // Display details page for surfboards

@@ -1,7 +1,13 @@
 extends layout
 
 block content
-  h1= title
+  h1='All Surfboards'
+
+  ul
+    each surfboard in surfboard_list 
+      li
+        a(href=surfboard.url) #{surfboard.name}
+
 
   p
     a(href="/") Back home
