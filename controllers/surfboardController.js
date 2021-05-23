@@ -3,6 +3,38 @@ const Category = require('../models/Category');
 const async = require('async');
 const { body, validationResult } = require('express-validator');
 
+const sanitiseSurfboardInputs = [
+  body('name')
+    .trim()
+    .isLength({ min: 1 })
+    .escape()
+    .withMessage('You must enter a name'),
+  body('description')
+    .trim()
+    .isLength({ min: 1 })
+    .escape()
+    .withMessage('You must enter a description'),
+  body('category')
+    .trim()
+    .isLength({ min: 1 })
+    .escape()
+    .withMessage('You must enter a category'),
+  body('price')
+    .trim()
+    .isLength({ min: 1 })
+    .escape()
+    .withMessage('You must enter a price')
+    .isNumeric()
+    .withMessage('The price must be numeric'),
+  body('number_in_stock')
+    .trim()
+    .isLength({ min: 1 })
+    .escape()
+    .withMessage('You must enter a number in stock')
+    .isNumeric()
+    .withMessage('The number in stock must be numeric'),
+];
+
 // Display list of all surfboards
 exports.surfboard_list = function (req, res, next) {
   Surfboard.find().exec(function (err, surfboard_list) {
@@ -55,35 +87,7 @@ exports.surfboard_create_get = function (req, res, next) {
 // Handle create surfboard form on POST
 exports.surfboard_create_post = [
   // Sanitise and validate fields
-  body('name')
-    .trim()
-    .isLength({ min: 1 })
-    .escape()
-    .withMessage('You must enter a name'),
-  body('description')
-    .trim()
-    .isLength({ min: 1 })
-    .escape()
-    .withMessage('You must enter a description'),
-  body('category')
-    .trim()
-    .isLength({ min: 1 })
-    .escape()
-    .withMessage('You must enter a category'),
-  body('price')
-    .trim()
-    .isLength({ min: 1 })
-    .escape()
-    .withMessage('You must enter a price')
-    .isNumeric()
-    .withMessage('The price must be numeric'),
-  body('number_in_stock')
-    .trim()
-    .isLength({ min: 1 })
-    .escape()
-    .withMessage('You must enter a number in stock')
-    .isNumeric()
-    .withMessage('The number in stock must be numeric'),
+  ...sanitiseSurfboardInputs,
   function (req, res, next) {
     const errors = validationResult(req);
 
@@ -149,35 +153,7 @@ exports.surfboard_update_get = function (req, res, next) {
 // Handle surfboard update form on POST
 exports.surfboard_update_post = [
   // Sanitise and validate fields
-  body('name')
-    .trim()
-    .isLength({ min: 1 })
-    .escape()
-    .withMessage('You must enter a name'),
-  body('description')
-    .trim()
-    .isLength({ min: 1 })
-    .escape()
-    .withMessage('You must enter a description'),
-  body('category')
-    .trim()
-    .isLength({ min: 1 })
-    .escape()
-    .withMessage('You must enter a category'),
-  body('price')
-    .trim()
-    .isLength({ min: 1 })
-    .escape()
-    .withMessage('You must enter a price')
-    .isNumeric()
-    .withMessage('The price must be numeric'),
-  body('number_in_stock')
-    .trim()
-    .isLength({ min: 1 })
-    .escape()
-    .withMessage('You must enter a number in stock')
-    .isNumeric()
-    .withMessage('The number in stock must be numeric'),
+  ...sanitiseSurfboardInputs,
   function (req, res, next) {
     const errors = validationResult(req);
 

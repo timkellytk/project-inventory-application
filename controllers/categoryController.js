@@ -3,6 +3,19 @@ const Surfboard = require('../models/Surfboard');
 const async = require('async');
 const { body, validationResult } = require('express-validator');
 
+const sanitiseCategoryInputs = [
+  body('name')
+    .trim()
+    .isLength({ min: 1 })
+    .escape()
+    .withMessage('You need to enter a name'),
+  body('description')
+    .trim()
+    .isLength({ min: 1 })
+    .escape()
+    .withMessage('You need to enter a description'),
+];
+
 // Display all categories
 exports.category_list = function (req, res, next) {
   Category.find({}).exec(function (err, category_list) {
@@ -49,16 +62,7 @@ exports.category_create_get = function (req, res, next) {
 // Handle create category form on POST
 exports.category_create_post = [
   // Validate and sanitise fields
-  body('name')
-    .trim()
-    .isLength({ min: 1 })
-    .escape()
-    .withMessage('You need to enter a name'),
-  body('description')
-    .trim()
-    .isLength({ min: 1 })
-    .escape()
-    .withMessage('You need to enter a description'),
+  ...sanitiseCategoryInputs,
   function (req, res, next) {
     // If errors, re-render form with error messages
     const errors = validationResult(req);
@@ -104,8 +108,7 @@ exports.category_update_get = function (req, res, next) {
 // Handle update category form on POST
 exports.category_update_post = [
   // Validate and sanitise inputs
-  body('name').trim().isLength({ min: 1 }).escape(),
-  body('description').trim().isLength({ min: 1 }).escape(),
+  ...sanitiseCategoryInputs,
   function (req, res, next) {
     const errors = validationResult(req);
 
