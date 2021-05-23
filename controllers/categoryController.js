@@ -1,7 +1,7 @@
-const Category = require("../models/Category");
-const Surfboard = require("../models/Surfboard");
-const async = require("async");
-const { body, validationResult } = require("express-validator");
+const Category = require('../models/Category');
+const Surfboard = require('../models/Surfboard');
+const async = require('async');
+const { body, validationResult } = require('express-validator');
 
 // Display all categories
 exports.category_list = function (req, res, next) {
@@ -10,8 +10,8 @@ exports.category_list = function (req, res, next) {
       return next(err);
     }
 
-    res.render("category_list", {
-      title: "All Categories",
+    res.render('category_list', {
+      title: 'All Categories',
       category_list: category_list,
     });
   });
@@ -33,7 +33,7 @@ exports.category_detail = function (req, res, next) {
         return next(err);
       }
 
-      res.render("category_details", {
+      res.render('category_details', {
         category: results.category,
         surfboards: results.surfboards,
       });
@@ -43,29 +43,29 @@ exports.category_detail = function (req, res, next) {
 
 // Display create category form on GET
 exports.category_create_get = function (req, res, next) {
-  res.render("category_form", { title: "Create Category" });
+  res.render('category_form', { title: 'Create Category' });
 };
 
 // Handle create category form on POST
 exports.category_create_post = [
   // Validate and sanitise fields
-  body("name")
+  body('name')
     .trim()
     .isLength({ min: 1 })
     .escape()
-    .withMessage("You need to enter a name"),
-  body("description")
+    .withMessage('You need to enter a name'),
+  body('description')
     .trim()
     .isLength({ min: 1 })
     .escape()
-    .withMessage("You need to enter a description"),
+    .withMessage('You need to enter a description'),
   function (req, res, next) {
     // If errors, re-render form with error messages
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
-      res.render("category_form", {
-        title: "Create Category",
+      res.render('category_form', {
+        title: 'Create Category',
         errors: errors.array(),
       });
     }
@@ -94,8 +94,8 @@ exports.category_update_get = function (req, res, next) {
       return next(err);
     }
 
-    res.render("category_form", {
-      title: "Update Category",
+    res.render('category_form', {
+      title: 'Update Category',
       category: the_category,
     });
   });
@@ -104,8 +104,8 @@ exports.category_update_get = function (req, res, next) {
 // Handle update category form on POST
 exports.category_update_post = [
   // Validate and sanitise inputs
-  body("name").trim().isLength({ min: 1 }).escape(),
-  body("description").trim().isLength({ min: 1 }).escape(),
+  body('name').trim().isLength({ min: 1 }).escape(),
+  body('description').trim().isLength({ min: 1 }).escape(),
   function (req, res, next) {
     const errors = validationResult(req);
 
@@ -116,8 +116,8 @@ exports.category_update_post = [
           return next(err);
         }
 
-        res.render("category_form", {
-          title: "Update Category",
+        res.render('category_form', {
+          title: 'Update Category',
           category: the_category,
           errors: errors.array(),
         });
@@ -152,21 +152,58 @@ exports.category_update_post = [
 
 // Display delete category form on GET
 exports.category_delete_get = function (req, res, next) {
-  Category.findById(req.params.id).exec(function (err, the_category) {
-    if (err) {
-      return next(err);
+  async.parallel(
+    {
+      category: function (callback) {
+        Category.findById(req.params.id).exec(callback);
+      },
+      surfboards: function (callback) {
+        Surfboard.find({ category: req.params.id }).exec(callback);
+      },
+    },
+    function (err, results) {
+      if (err) {
+        return next(err);
+      }
+
+      return res.render('category_delete', {
+        category: results.category,
+        surfboards: results.surfboards,
+      });
     }
-    res.render("category_delete", { category: the_category });
-  });
+  );
 };
 
 // Handle delete category form on POST
 exports.category_delete_post = function (req, res, next) {
-  Category.findByIdAndDelete(req.body.categoryid, {}, function (err) {
-    if (err) {
-      return next(err);
-    }
+  async.parallel(
+    {
+      category: function (callback) {
+        Category.findById(req.params.id).exec(callback);
+      },
+      surfboards: function (callback) {
+        Surfboard.find({ category: req.params.id }).exec(callback);
+      },
+    },
+    function (err, results) {
+      if (err) {
+        return next(err);
+      }
 
-    res.redirect("/inventory/categories");
-  });
+      if (results.surfboards.length) {
+        return res.render('category_delete', {
+          category: results.category,
+          surfboards: results.surfboards,
+        });
+      }
+
+      Category.findByIdAndDelete(req.body.categoryid, {}, function (err) {
+        if (err) {
+          return next(err);
+        }
+
+        return res.redirect('/inventory/categories');
+      });
+    }
+  );
 };

@@ -2,10 +2,21 @@ extends layout
 
 block content 
   h1 Delete #{category.name}?
-  p Warning: you can't undo this action 
+  p 
+    a(href="/inventory/categories") Back to categories
 
-  form(method="POST" action="")
-    .form-group 
-      input#categoryid.form-control(type='hidden', name='categoryid' required='true' value=category._id)
+  if surfboards.length
+    h4 You need to delete all #{category.name}'s before deleting the #{category.name} category 
+    ul 
+      each surfboard in surfboards 
+        li 
+          p
+            a(href=surfboard.url) #{surfboard.name}
+  else 
+    p Warning: You can't undo this action
+    form(method="POST" action="")
+      .form-group 
+        input#categoryid.form-control(type='hidden', name='categoryid' required='true' value=category._id)
 
-    button.btn.btn-danger(type='submit') Delete
+      button.btn.btn-danger(type='submit') Delete
+  
