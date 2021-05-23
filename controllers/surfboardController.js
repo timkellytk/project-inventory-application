@@ -1,5 +1,6 @@
 const Surfboard = require('../models/Surfboard');
 const Category = require('../models/Category');
+const async = require('async');
 const { body, validationResult } = require('express-validator');
 
 // Display list of all surfboards
@@ -122,7 +123,27 @@ exports.surfboard_create_post = [
 
 // Display surfboard update form on GET
 exports.surfboard_update_get = function (req, res, next) {
-  res.send('NOT IMPLEMENTED: update surfboard GET');
+  async.parallel(
+    {
+      category_list: function (callback) {
+        Category.find().exec(callback);
+      },
+      surfboard: function (callback) {
+        Surfboard.findById(req.params.id, {}, callback);
+      },
+    },
+    function (err, result) {
+      if (err) {
+        return next(err);
+      }
+
+      res.render('surfboard_form', {
+        title: 'Update Surfboard',
+        category_list: result.category_list,
+        surfboard: result.surfboard,
+      });
+    }
+  );
 };
 
 // Handle surfboard update form on POST
