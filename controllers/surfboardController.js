@@ -1,4 +1,4 @@
-const Surfboard = require("../models/Surfboard");
+const Surfboard = require('../models/Surfboard');
 
 // Display list of all surfboards
 exports.surfboard_list = function (req, res, next) {
@@ -7,12 +7,12 @@ exports.surfboard_list = function (req, res, next) {
       return next(err);
     }
     if (surfboard_list == null) {
-      const error = new Error("Surfboards not found");
+      const error = new Error('Surfboards not found');
       err.status = 404;
       return next(error);
     }
 
-    res.render("surfboard_list", { surfboard_list: surfboard_list });
+    res.render('surfboard_list', { surfboard_list: surfboard_list });
     return;
   });
 };
@@ -20,40 +20,40 @@ exports.surfboard_list = function (req, res, next) {
 // Display details page for surfboards
 exports.surfboard_details = function (req, res, next) {
   Surfboard.findById(req.params.id)
-    .populate("category")
+    .populate('category')
     .exec(function (err, the_surfboard) {
       if (err) {
         return next(err);
       }
 
       if (the_surfboard == null) {
-        const error = new Error("No surfboard");
+        const error = new Error('No surfboard');
         error.status = 404;
         return next(error);
       }
 
-      res.render("surfboard_details", { surfboard: the_surfboard });
+      res.render('surfboard_details', { surfboard: the_surfboard });
     });
 };
 
 // Display create surfboard form on GET
 exports.surfboard_create_get = function (req, res, next) {
-  res.send("NOT IMPLEMENTED: create surfboard GET");
+  res.send('NOT IMPLEMENTED: create surfboard GET');
 };
 
 // Handle create surfboard form on POST
 exports.surfboard_create_post = function (req, res, next) {
-  res.send("NOT IMPLEMENTED: create surfboard POST");
+  res.send('NOT IMPLEMENTED: create surfboard POST');
 };
 
 // Display surfboard update form on GET
 exports.surfboard_update_get = function (req, res, next) {
-  res.send("NOT IMPLEMENTED: update surfboard GET");
+  res.send('NOT IMPLEMENTED: update surfboard GET');
 };
 
 // Handle surfboard update form on POST
 exports.surfboard_update_post = function (req, res, next) {
-  res.send("NOT IMPLEMENTED: create surfboard POST");
+  res.send('NOT IMPLEMENTED: create surfboard POST');
 };
 
 // Display surfboard delete form on GET
@@ -62,11 +62,17 @@ exports.surfboard_delete_get = function (req, res, next) {
     if (err) {
       return next(err);
     }
-    res.render("surfboard_delete", { surfboard: the_surfboard });
+    res.render('surfboard_delete', { surfboard: the_surfboard });
   });
 };
 
 // Handle surfboard delete form on POST
 exports.surfboard_delete_post = function (req, res, next) {
-  res.send("NOT IMPLEMENTED: delete surfboard POST");
+  Surfboard.findByIdAndDelete(req.body.surfboardid, {}, function (err) {
+    if (err) {
+      return next(err);
+    }
+
+    return res.redirect('/inventory/surfboards');
+  });
 };
