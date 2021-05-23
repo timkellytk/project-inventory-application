@@ -1,4 +1,5 @@
 const Surfboard = require('../models/Surfboard');
+const Category = require('../models/Category');
 
 // Display list of all surfboards
 exports.surfboard_list = function (req, res, next) {
@@ -38,7 +39,15 @@ exports.surfboard_details = function (req, res, next) {
 
 // Display create surfboard form on GET
 exports.surfboard_create_get = function (req, res, next) {
-  res.send('NOT IMPLEMENTED: create surfboard GET');
+  Category.find().exec(function (err, the_categories) {
+    if (err) {
+      return next(err);
+    }
+    res.render('surfboard_form', {
+      title: 'Add New Surfboard',
+      category_list: the_categories,
+    });
+  });
 };
 
 // Handle create surfboard form on POST
